@@ -1049,11 +1049,11 @@
   }
 
   function applyBoardTheme(name) {
-    const wrap = $('board-wrap');
     const themes = {
       verde: { light: '#e9e2d0', dark: '#7d9c68' },
       blu: { light: '#dee7f3', dark: '#5b7bab' },
-      marmo: { light: '#f3efe6', dark: '#b6a99a' }
+      marmo: { light: '#f3efe6', dark: '#b6a99a' },
+      rosso: { light: '#f2d9cb', dark: '#a2453c' }
     };
     const t = themes[name] || themes.verde;
     document.documentElement.style.setProperty('--sq-light', t.light);
