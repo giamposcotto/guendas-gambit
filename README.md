@@ -21,6 +21,9 @@ I pezzi sono **disegnati in SVG** (non dipendono dai font del sistema) e l'inter
 si adatta da sola: su **smartphone** diventa a colonna con una barra dell'insegnante
 sotto la scacchiera, pulsanti grandi da toccare e schede che restano agganciate in alto.
 
+La scacchiera si può vestire con **9 stili** (verde classico, blu notte, grigio, marmo,
+rosso, rosa, ocra, viola, acqua) scegliendoli dalle Impostazioni con i quadratini colorati.
+
 ### Livelli dell'avversario
 
 1. **Principiante** (~400) — gioca quasi a caso

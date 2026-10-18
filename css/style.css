@@ -858,6 +858,24 @@ select:focus, input[type="text"]:focus { outline: none; border-color: var(--acce
 
 .level-list { display: flex; flex-direction: column; gap: 7px; }
 #level-desc { display: none; margin: 9px 0 0; }
+
+/* selettore degli stili della scacchiera */
+.theme-grid { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+.theme-swatch {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 11px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--l) 0 50%, var(--d) 50% 100%);
+  box-shadow: var(--shadow-soft);
+  transition: transform .15s, box-shadow .15s;
+}
+.theme-swatch:hover { transform: translateY(-2px); }
+.theme-swatch.active {
+  box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px var(--accent);
+}
 .level-item {
   display: flex;
   align-items: center;

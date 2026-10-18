@@ -947,7 +947,8 @@
     $('set-hints').checked = S.hintsOn;
     $('set-coords').checked = S.coordsOn;
     $('set-sound').checked = S.soundOn;
-    $('set-board').value = S.boardTheme;
+    S.boardTheme = themeById(S.boardTheme).id;   /* il verde resta il default */
+    renderThemes();
     $('set-tempo-livello').value = String(S.analysisSpeed);
     applyBoardTheme(S.boardTheme);
 
@@ -1017,7 +1018,6 @@
     $('set-hints').onchange = (e) => { S.hintsOn = e.target.checked; view.showHints = S.hintsOn; saveSettings(); updateBoard(); };
     $('set-coords').onchange = (e) => { S.coordsOn = e.target.checked; view.showCoords = S.coordsOn; saveSettings(); updateBoard(); };
     $('set-sound').onchange = (e) => { S.soundOn = e.target.checked; UI.Sound.enabled = S.soundOn; saveSettings(); };
-    $('set-board').onchange = (e) => { S.boardTheme = e.target.value; applyBoardTheme(S.boardTheme); saveSettings(); };
     $('set-tempo-livello').onchange = (e) => { S.analysisSpeed = parseInt(e.target.value, 10) || 2; saveSettings(); };
 
     $('btn-lesson-hint').onclick = () => { if (S.lesson) toast('💡 ' + S.lesson.hint, 'good'); };
@@ -1048,16 +1048,53 @@
     $('btn-theme').textContent = theme === 'dark' ? '🌙' : '☀️';
   }
 
+  /* ==================================================== stili scacchiera */
+  /* Il verde classico è il tema predefinito; gli altri restano disponibili
+     e la scelta viene ricordata nel browser. */
+  const BOARD_THEMES = [
+    { id: 'verde', name: 'Verde classico', light: '#e9e2d0', dark: '#7d9c68' },
+    { id: 'blu', name: 'Blu notte', light: '#dee7f3', dark: '#5b7bab' },
+    { id: 'grigio', name: 'Grigio', light: '#e9eaee', dark: '#7f8794' },
+    { id: 'marmo', name: 'Marmo', light: '#f3efe6', dark: '#b6a99a' },
+    { id: 'rosso', name: 'Rosso', light: '#f2d9cb', dark: '#a2453c' },
+    { id: 'rosa', name: 'Rosa', light: '#f8dfe5', dark: '#bd6c86' },
+    { id: 'ocra', name: 'Ocra', light: '#f1e4c6', dark: '#b08b3e' },
+    { id: 'viola', name: 'Viola', light: '#e7dff2', dark: '#7a63a8' },
+    { id: 'acqua', name: 'Acqua', light: '#d9ecec', dark: '#3f8a8a' }
+  ];
+
+  function themeById(id) {
+    return BOARD_THEMES.filter((t) => t.id === id)[0] || BOARD_THEMES[0];
+  }
+
   function applyBoardTheme(name) {
-    const themes = {
-      verde: { light: '#e9e2d0', dark: '#7d9c68' },
-      blu: { light: '#dee7f3', dark: '#5b7bab' },
-      marmo: { light: '#f3efe6', dark: '#b6a99a' },
-      rosso: { light: '#f2d9cb', dark: '#a2453c' }
-    };
-    const t = themes[name] || themes.verde;
+    const t = themeById(name);
     document.documentElement.style.setProperty('--sq-light', t.light);
     document.documentElement.style.setProperty('--sq-dark', t.dark);
+  }
+
+  function renderThemes() {
+    const box = $('theme-grid');
+    if (!box) return;
+    box.innerHTML = '';
+    BOARD_THEMES.forEach((t) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'theme-swatch' + (t.id === S.boardTheme ? ' active' : '');
+      b.title = t.name;
+      b.setAttribute('aria-label', 'Scacchiera ' + t.name);
+      b.style.setProperty('--l', t.light);
+      b.style.setProperty('--d', t.dark);
+      b.onclick = () => {
+        S.boardTheme = t.id;
+        applyBoardTheme(t.id);
+        saveSettings();
+        renderThemes();
+      };
+      box.appendChild(b);
+    });
+    const nm = $('theme-name');
+    if (nm) nm.textContent = themeById(S.boardTheme).name;
   }
 
   function showHelp() {
