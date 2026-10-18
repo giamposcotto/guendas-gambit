@@ -467,12 +467,48 @@
       hint: 'La donna in h5 e l\'alfiere in c4 guardano la stessa casa debole: la f7, difesa solo dal re.',
       explanation: 'Dxf7#! Il "matto del pastore": la donna cattura il pedone f7, protetta dall\'alfiere in c4. Il re non può prendere (la donna è difesa) e non ha case di fuga. Da ricordare: se l\'avversario gioca e5 e poi muove il cavallo in f6 senza difendere f7, questo matto è in agguato.'
     },
+    {
+      id: 'b8', level: 'Base', title: 'Matto in una mossa (due torri)',
+      fen: '7k/R7/1R6/8/8/8/8/6K1 w - - 0 1',
+      goal: 'Dai scacco matto con una mossa di torre.', type: 'mate1', solution: ['b6b8'],
+      hint: 'Una torre taglia la settima traversa, l\'altra può salire sull\'ottava: il re nero è chiuso in un angolo.',
+      explanation: 'Tb8#! La torre sale sull\'ottava traversa e dà scacco: il re non può scappare in alto (la torre in a7 controlla la settima traversa) né restare sulla traversa. È il "matto della scala": due torri che avanzano insieme sono imbattibili.'
+    },
+    {
+      id: 'b9', level: 'Base', title: 'Vinci il cavallo con la torre',
+      fen: '4k3/8/8/8/2n5/8/8/3RK3 w - - 0 1',
+      goal: 'Cattura il pezzo di maggior valore che non è difeso.', type: 'move', solution: ['d1d4'],
+      hint: 'Il cavallo nero in c4 non è protetto da nessuno: la torre ha una strada libera lungo la colonna.',
+      explanation: 'Txd4! La torre percorre la colonna d e cattura il cavallo indifeso: tre punti guadagnati senza rischiare nulla. Prima di ogni cattura chiediti sempre chi difende il bersaglio: se nessuno, è gratis.'
+    },
+    {
+      id: 'b10', level: 'Base', title: 'Ferma il pedone che promuove',
+      fen: '4k3/8/8/8/8/8/p7/R3K3 w - - 0 1',
+      goal: 'Impedisci al pedone nero di diventare donna.', type: 'move', solution: ['a1a2'],
+      hint: 'Il pedone in a2 è a un passo dalla promozione e la torre è già sulla sua colonna.',
+      explanation: 'Txa2! La torre cattura il pedone un attimo prima che diventi donna. Un pedone in settima traversa è quasi una donna: vale più di una torre, quindi va fermato subito, anche a costo di sacrificare materiale.'
+    },
+    {
+      id: 'b11', level: 'Base', title: 'Matto in una mossa (donna e re)',
+      fen: '7k/8/5K2/8/8/8/8/6Q1 w - - 0 1',
+      goal: 'Trova lo scacco matto in una mossa.', type: 'mate1', solution: ['g1g7'],
+      hint: 'Il re bianco in f6 protegge la casa g7: la donna può avvicinarsi al re nero senza paura.',
+      explanation: 'Dg7#! La donna si appoggia al proprio re: il re nero non può catturarla e non ha case di fuga. Re e donna vicini sono una coppia invincibile: il re protegge, la donna dà il colpo finale.'
+    },
+    {
+      id: 'b12', level: 'Base', title: 'Sotto scacco: cattura chi attacca',
+      fen: '4k3/8/8/8/8/8/3q4/3RK3 w - - 0 1',
+      goal: 'Il re è sotto scacco: trovagli una via d\'uscita.', type: 'move', solution: ['d1d2'],
+      hint: 'La donna nera dà scacco da d2, ma non è difesa da nessuno, e la torre è proprio lì accanto.',
+      explanation: 'Txd2! Contro uno scacco hai tre strade: spostare il re, bloccare l\'attacco o catturare il pezzo che attacca. Qui la donna nera era indifesa, quindi la torre la cattura e chiude subito la partita.'
+    },
 
     /* ---------------- INTERMEDIO ---------------- */
     {
       id: 'i1', level: 'Intermedio', title: 'Matto in due: sacrificio in d8',
       fen: 'r5k1/5ppp/8/8/8/8/3Q1PPP/3R2K1 w - - 0 1',
       goal: 'Trova la prima mossa del matto in due.', type: 'move', solution: ['d2d8'],
+      line: ['d2d8', 'a8d8', 'd1d8'],
       hint: 'Sacrifica qualcosa di grande sull\'ottava traversa: la torre è pronta a entrare.',
       explanation: 'Dd8+!! La donna si sacrifica per aprire la strada: la torre nera deve catturare (o bloccarsi), e poi Txd8 è matto. Il tema è la traversa debole: se il re non ha case di fuga, la traversa è fatale.'
     },
@@ -497,6 +533,41 @@
       hint: 'Il re nero è lontanissimo: avanza con il pedone e usa il tuo re per proteggerlo se serve.',
       explanation: 'Un pedone passato senza ostacoli davanti è una macchina da guerra: accompagnato dal re va dritto in promozione. Nel finale il re diventa un pezzo attivo, non resta in un angolo.'
     },
+    {
+      id: 'i5', level: 'Intermedio', title: 'L\'infilata: la torre dietro il re',
+      fen: '8/8/8/8/3k3q/8/8/R5K1 w - - 0 1',
+      goal: 'Con una mossa metti re e donna sulla stessa linea.', type: 'move', solution: ['a1a4'],
+      hint: 'Cerca la casa della quarta traversa da cui dare scacco: la donna nera è sulla stessa traversa, subito dietro il suo re.',
+      explanation: 'Ta4+! Il re deve spostarsi e la donna, che gli stava dietro sulla stessa traversa, resta in mezzo alla strada: la torre la cattura al colpo successivo. Questa si chiama "infilata": è il rovescio dell\'inchiodatura, perché qui il pezzo di valore è quello dietro.'
+    },
+    {
+      id: 'i6', level: 'Intermedio', title: 'Scoperta: libera la colonna',
+      fen: '4k3/1q6/8/8/4B3/8/8/4R1K1 w - - 0 1',
+      goal: 'Con una mossa dell\'alfiere vinci la donna nera.', type: 'move', solution: ['e4b7'],
+      hint: 'L\'alfiere in e4 sta davanti alla tua torre: spostandolo scopri l\'attacco sulla colonna del re nero.',
+      explanation: 'Axb7+! L\'alfiere cattura la donna e, spostandosi, scopre lo scacco della torre in e1: la donna nera era sulla stessa colonna del suo re. Si chiama attacco di scoperta e vale doppio, perché in una sola mossa entrano in gioco due pezzi.'
+    },
+    {
+      id: 'i7', level: 'Intermedio', title: 'La forchetta sulle due torri',
+      fen: '5rkr/8/8/4N3/8/8/8/R5K1 w - - 0 1',
+      goal: 'Con una mossa del cavallo attacca le due torri nere.', type: 'move', solution: ['e5g6'],
+      hint: 'Cerca la casa da cui il cavallo tocca sia la torre in f8 sia quella in h8.',
+      explanation: 'Cg6! Il cavallo attacca le due torri insieme: il nero ne può salvare una sola, l\'altra la cattura il cavallo. Il cavallo è il re delle forchette: cerca sempre le case da cui minaccia due pezzi alla volta.'
+    },
+    {
+      id: 'i8', level: 'Intermedio', title: 'La torre inchiodata',
+      fen: '4k3/3r4/8/1B2P3/8/8/8/6K1 w - - 0 1',
+      goal: 'Attacca il pezzo inchiodato con il pedone.', type: 'move', solution: ['e5e6'],
+      hint: 'La torre nera in d7 è inchiodata al re in e8 dall\'alfiere in b5: non può spostarsi. Colpiscila con il pedone in e5.',
+      explanation: 'e6! Il pedone attacca la torre inchiodata: la torre non può spostarsi (scoprirebbe il re) e non può catturare il pedone, che è in diagonale. Anche se il re la difende, dopo exd7+ la riprende: un pezzo inchiodato è un pezzo fermo, e vale sempre la pena attaccarlo con qualcosa di meno prezioso.'
+    },
+    {
+      id: 'i9', level: 'Intermedio', title: 'Il re accompagna il pedone',
+      fen: '8/8/2K5/1P6/8/8/8/7k w - - 0 1',
+      goal: 'Porta il pedone in promozione: il computer muoverà il re nero.', type: 'promotion', solution: [],
+      hint: 'Avanza con il pedone, ma non lasciarlo solo: il re bianco è lì per aprirgli la strada.',
+      explanation: 'Un pedone da solo non va lontano, ma con il re al fianco è imbattibile: il re scorta il pedone, gli conquista le case e lo accompagna fino all\'ottava traversa. Nel finale il re è un pezzo forte, non un peso da nascondere.'
+    },
 
     /* ---------------- AVANZATO ---------------- */
     {
@@ -510,6 +581,7 @@
       id: 'a2', level: 'Avanzato', title: 'Il matto affogato',
       fen: '5rk1/6pp/8/3Q4/6N1/8/8/6K1 w - - 0 1',
       goal: 'Trova la prima mossa della combinazione di matto (sono 3 mosse).', type: 'move', solution: ['g4h6'],
+      line: ['g4h6', 'g8h8', 'd5g8', 'f8g8', 'h6f7'],
       hint: 'Il cavallo va in h6 con scacco, poi la donna si sacrifica in g8... e il cavallo rifinisce in f7.',
       explanation: 'Ch6+! Rh8 forzato, poi Dg8+!! (la donna si immola, protetta dal cavallo) e dopo Rxg8 segue Cf7#: il re nero è soffocato dai suoi stessi pezzi. È il famoso "matto affogato": il cavallo e la donna sono una coppia letale.'
     },
@@ -526,6 +598,37 @@
       goal: 'Con una mossa del cavallo attacca re e donna.', type: 'move', solution: ['d5e7'],
       hint: 'Il cavallo deve saltare in una casa che tocca sia il re in g8 sia la donna in c8.',
       explanation: 'Ce7+! Il cavallo dà scacco al re e attacca la donna in c8: il nero deve salvarsi dallo scacco e al colpo successivo il cavallo cattura la donna. Si chiama "forchetta reale" perché il re e la donna cadono nello stesso attacco.'
+    },
+    {
+      id: 'a5', level: 'Avanzato', title: 'Scoperta con scacco: vinci la donna',
+      fen: '7k/3q4/8/8/3B4/8/5PPP/3R2K1 w - - 0 1',
+      goal: 'Muovi l\'alfiere con scacco e conquista la donna.', type: 'move',
+      solution: ['d4e5', 'd4c3'], line: ['d4e5', 'h8g8', 'd1d7'],
+      hint: 'L\'alfiere può dare scacco in due case diverse, e dietro di lui la torre è già puntata sulla colonna della donna.',
+      explanation: 'Ae5+! (funziona anche Ac3+) L\'alfiere dà scacco e contemporaneamente scopre la colonna d: la torre attacca la donna, che cade al colpo successivo. Una scoperta con scacco è doppiamente forte, perché l\'avversario è costretto a rispondere allo scacco e non può salvare il pezzo attaccato.'
+    },
+    {
+      id: 'a6', level: 'Avanzato', title: 'Matto in due: la donna si sacrifica',
+      fen: '5rk1/5ppp/8/8/8/8/3Q1PPP/3R2K1 w - - 0 1',
+      goal: 'Trova il sacrificio che forza il matto in due mosse.', type: 'move',
+      solution: ['d2d8'], line: ['d2d8', 'f8d8', 'd1d8'],
+      hint: 'La torre nera difende l\'ottava traversa: offrile qualcosa che non possa rifiutare, poi entra con la tua torre.',
+      explanation: 'Dd8+!! La donna si immola: la torre nera deve catturare (è l\'unica mossa possibile) e lascia l\'ottava traversa scoperta, dove la tua torre entra con Txd8#. Quando la traversa davanti al re è debole, un sacrificio apre sempre la strada.'
+    },
+    {
+      id: 'a7', level: 'Avanzato', title: 'Attacco a raggi X sulla quinta traversa',
+      fen: '8/8/8/4k2q/8/8/5PPP/1R4K1 w - - 0 1',
+      goal: 'Con una mossa di torre vinci la donna nera.', type: 'move', solution: ['b1b5'],
+      hint: 'Cerca la casa da cui dare scacco al re, con la donna sulla stessa traversa subito dietro di lui.',
+      explanation: 'Tb5+! Il re deve uscire dalla quinta traversa e la donna resta esposta: al colpo successivo Txh5 la cattura. Si chiama attacco a raggi X: re e pezzo sulla stessa linea formano un bersaglio doppio, e il pezzo che sta dietro cade sempre.'
+    },
+    {
+      id: 'a8', level: 'Avanzato', title: 'Matto in due con le due torri',
+      fen: '5rk1/5ppp/8/8/8/8/1R3PPP/1R4K1 w - - 0 1',
+      goal: 'Trova la prima mossa del matto in due.', type: 'move',
+      solution: ['b2b8'], line: ['b2b8', 'f8b8', 'b1b8'],
+      hint: 'Offri una torre sull\'ottava traversa: l\'altra è sulla stessa colonna, pronta a prendere il suo posto.',
+      explanation: 'Tb8+!! (con la torre di b2) La prima torre si sacrifica e la seconda entra sulla stessa colonna: Txb8 e poi Txb8 matto. Due torri sulla stessa colonna sono come una scala: se cade la prima, sale la seconda.'
     }
   ];
 

@@ -563,7 +563,8 @@
 
       const legal = this.prepare();
       if (legal.length === 0) return null;
-      if (legal.length === 1) return { move: legal[0], score: 0, depth: 0, nodes: 0, timeMs: 0, scores: [{ move: legal[0], score: 0 }] };
+      /* niente scorciatoia con una sola mossa: la ricerca la valuta comunque,
+         altrimenti la posizione risulterebbe "0.00" (equilibrio) per finta */
 
       let best = null, bestEven = null, prevBest = 0;
       for (let d = 1; d <= maxDepth; d++) {

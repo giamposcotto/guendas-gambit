@@ -58,6 +58,37 @@ for (const lesson of C.LESSONS) {
   if (verdict === 'FAIL') problems++;
 }
 
+/* ---- verifica delle continuazioni guidate ---- */
+console.log('\n=== VERIFICA CONTINUAZIONI ===\n');
+for (const lesson of C.LESSONS) {
+  if (!lesson.line) continue;
+  const b = new E.Board(lesson.fen);
+  const mosse = [];
+  let ok = true;
+  for (const u of lesson.line) {
+    const mv = E.uciToMove(b, u);
+    if (!mv) { ok = false; mosse.push('ILLEGALE(' + u + ')'); break; }
+    mosse.push(b.moveToSan(mv));
+    b.makeMove(mv);
+  }
+  const over = b.isGameOver();
+  const matto = over.over && over.reason === 'scacco matto';
+  let resa = matto;
+  let nota = matto ? '(matto)' : '';
+  if (!matto && ok) {
+    /* le combinazioni che non finiscono a matto devono almeno lasciare un netto vantaggio */
+    const dopo = AI.analyzePosition(b, { depth: 5, timeMs: 1500 });
+    const vantaggio = over.over ? -99999 : -dopo.score;
+    resa = vantaggio >= 200;
+    nota = over.over ? '=> ' + over.reason
+      : `=> ${vantaggio > 0 ? '+' : ''}${(vantaggio / 100).toFixed(2)} ${resa ? '(vantaggio decisivo)' : '(vantaggio insufficiente)'}`;
+  }
+  const primoOk = lesson.line.length && lesson.solution.some((s) => s.slice(0, 4) === lesson.line[0].slice(0, 4));
+  if (!resa || !ok) problems++;
+  if (!primoOk) { problems++; console.log(`FAIL ${lesson.id} la prima mossa della linea non è fra le soluzioni`); }
+  console.log(`${resa && ok ? 'OK  ' : 'FAIL'} ${lesson.id.padEnd(3)} ${mosse.join(' ')} ${nota}`);
+}
+
 /* ---- test dei moduli del coach ---- */
 console.log('\n=== VERIFICA MODULO COACH ===\n');
 function check(cond, msg) { console.log((cond ? 'OK   ' : 'FAIL ') + msg); if (!cond) problems++; }

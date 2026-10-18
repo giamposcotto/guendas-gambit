@@ -312,6 +312,27 @@
   function computerTurn() {
     if (S.gameOver) return;
     if (S.board.turn === S.playerColor) { startPlayerTurn(); return; }
+
+    /* lezione con continuazione guidata: gioco la mossa prevista dalla linea */
+    const L = S.lesson;
+    if (L && L.line && !L.solved && L.step < L.line.length) {
+      const attesa = L.line[L.step];
+      const mv = uciToMove(S.board, attesa);
+      const legale = mv && S.board.generateLegalMoves().some((m) => moveToUci(m) === attesa);
+      if (legale) {
+        setThinking(true, 'Rispondo…');
+        setTimeout(() => {
+          setThinking(false);
+          const res = applyMove(mv, false);
+          L.step++;
+          S.lastOpponentComment = res.san;
+          if (!res.over.over) afterOpponentMove(res);
+        }, 420);
+        return;
+      }
+      L.line = null;   /* continuazione non più valida: si gioca normalmente */
+    }
+
     setThinking(true, 'Sto pensando…');
     setTimeout(() => {
       const info = AI.chooseMove(S.board, S.level, { gameKeyCounts: S.keyCounts });
@@ -746,6 +767,7 @@
     if (!lesson) return;
     S.lesson = { id: lesson.id, title: lesson.title, goal: lesson.goal, hint: lesson.hint,
       explanation: lesson.explanation, type: lesson.type, solution: lesson.solution,
+      line: lesson.line ? lesson.line.slice() : null, step: 0,
       fen: lesson.fen, solved: false, attempts: 0, waiting: false };
     newGame({ fen: lesson.fen, color: 'w', keepLesson: true });
     renderLessonBanner();
@@ -761,33 +783,51 @@
     $('lesson-goal').textContent = S.lesson.goal;
     $('lesson-status').textContent = S.lesson.solved
       ? '✓ Lezione completata. ' + S.lesson.explanation
-      : 'Tocca a te: trova la mossa giusta. Se sbagli puoi riprovare.';
+      : (S.lesson.line && S.lesson.step > 0)
+        ? 'Mossa giusta! La combinazione non è finita: continua.'
+        : 'Tocca a te: trova la mossa giusta. Se sbagli puoi riprovare.';
+  }
+
+  /* stessa mossa? confronta la casa di partenza, di arrivo e il pezzo di promozione */
+  function stessaMossa(a, b) {
+    return a.slice(0, 4) === b.slice(0, 4) && (a.length <= 4 || a[4] === b[4]);
   }
 
   function checkLessonMove(move, res) {
     const L = S.lesson;
     L.attempts++;
     const uci = moveToUci(move);
-    const solutionOk = L.solution.some((s) => s.slice(0, 4) === uci.slice(0, 4) && (s.length <= 4 || s[4] === uci[4]));
+    const step = L.line ? L.step : 0;
+    /* dopo la prima mossa di una combinazione guidata si accetta solo quella prevista */
+    const attesa = L.line && step > 0 ? L.line[step] : null;
     let ok = false;
-    if (L.type === 'mate1') ok = res.over.over && res.over.reason === 'scacco matto';
+    if (attesa) ok = stessaMossa(attesa, uci);
+    else if (L.type === 'mate1') ok = res.over.over && res.over.reason === 'scacco matto';
     else if (L.type === 'promotion') ok = !!mPromo(move);
-    else ok = solutionOk;
+    else ok = L.solution.some((s) => stessaMossa(s, uci));
 
     if (ok) {
-      L.solved = true;
+      if (L.line) L.step = step + 1;
+      const finita = !L.line || L.step >= L.line.length;
       L.waiting = false;
-      S.lessonsDone[L.id] = true;
-      saveSettings();
       const m = S.moves[S.moves.length - 1];
-      m.quality = { label: 'Risposta esatta!', cls: 'best', symbol: '!' };
-      renderLessonBanner();
-      renderLessons();
-      renderCoach();
-      toast('✓ ' + L.explanation, 'good');
+      m.quality = { label: finita ? 'Risposta esatta!' : 'Mossa giusta!', cls: 'best', symbol: '!' };
+      if (finita) {
+        L.solved = true;
+        S.lessonsDone[L.id] = true;
+        saveSettings();
+        renderLessonBanner();
+        renderLessons();
+        renderCoach();
+        toast('✓ ' + L.explanation, 'good');
+      } else {
+        renderLessonBanner();
+        renderCoach();
+        toast('Giusto! La combinazione non è finita: continua…', 'good');
+      }
       if (!res.over.over) {
         /* il computer risponde e si continua a giocare */
-        setTimeout(computerTurn, 900);
+        setTimeout(computerTurn, finita ? 900 : 650);
       }
     } else {
       const m = S.moves[S.moves.length - 1];

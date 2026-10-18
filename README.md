@@ -1,7 +1,7 @@
 # ♞ Guenda's Gambit
 
 App di scacchi **giocabile direttamente nel browser**, con un **insegnante virtuale**
-che commenta le tue mosse, **8 livelli di difficoltà** e **15 lezioni guidate** divise in
+che commenta le tue mosse, **8 livelli di difficoltà** e **29 lezioni guidate** divise in
 Base, Intermedio e Avanzato.
 
 Nessuna installazione, nessuna dipendenza, nessun server: è un sito statico
@@ -15,7 +15,7 @@ Nessuna installazione, nessuna dipendenza, nessun server: è un sito statico
 |---|---|
 | **Gioca** | Partita contro il computer, con orologio opzionale, annulla mossa, suggerimento, analisi, rotazione della scacchiera ed export FEN/PGN. |
 | **Insegnante** | Dopo ogni tua mossa ricevi un giudizio (*ottima, buona, imprecisione, errore, errore grave*, con simboli `!`, `?!`, `?`, `??`) e la spiegazione in italiano: cosa hai minacciato, quali pezzi sono in presa, quali tatticismi ci sono sulla scacchiera. |
-| **Lezioni** | 15 esercizi con verifica automatica: matti in uno e in due, forchette, inchiodature, arrocco, promozione, matto affogato, attacco a raggi X... I progressi vengono salvati nel browser. |
+| **Lezioni** | 29 esercizi con verifica automatica: matti in uno e in due, forchette, inchiodature, infilate, scoperte, attacchi a raggi X, arrocco, promozione, matto affogato... Le combinazioni a più mosse si giocano davvero: il computer risponde con la linea prevista e devi completare il piano. I progressi vengono salvati nel browser. |
 
 I pezzi sono **disegnati in SVG** (non dipendono dai font del sistema) e l'interfaccia
 si adatta da sola: su **smartphone** diventa a colonna con una barra dell'insegnante
