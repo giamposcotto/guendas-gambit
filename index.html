@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guenda's Gambit · Scacchi con l'insegnante</title>
+<meta name="description" content="Guenda's Gambit: gioca a scacchi con un insegnante virtuale, 8 livelli di difficolta' e 15 lezioni guidate.">
+<meta name="theme-color" content="#0a0e16">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 45 45'><rect width='45' height='45' rx='11' fill='%230b101a'/><path d='M13 34.5 L13 29.5 C13.5 26 15 23.5 17.5 21.5 L14.5 18.5 C13.2 17.2 13 15.6 14.2 14.6 C15.4 13.7 17 13.8 18.2 14.8 L19.8 16.2 L21 12 L22 8.5 L23.5 12.2 C26 12.6 29 14.4 30.4 17.4 C31.6 20.2 31 23.4 29.4 26 C31.8 28.4 34 31.4 34 34.5 Z' fill='%23e3a44f'/></svg>">
+</head>
+<body>
+
+<!-- gradienti dei pezzi: definiti una volta sola, usati da tutte le scacchiere -->
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="pgw" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".45" stop-color="#f5eeda"/>
+      <stop offset="1" stop-color="#d6c8ab"/>
+    </linearGradient>
+    <linearGradient id="pgb" x1="0.1" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#5b6373"/>
+      <stop offset=".45" stop-color="#333a48"/>
+      <stop offset="1" stop-color="#14171f"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0c374"/>
+      <stop offset="1" stop-color="#c07d24"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div id="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" id="brand-logo" aria-hidden="true"></span>
+      <div class="brand-text">
+        <h1>Guenda&rsquo;s Gambit</h1>
+        <p class="tagline">Scacchi con un insegnante al tuo fianco</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn primary" id="btn-new">Nuova partita</button>
+      <button class="icon-btn" id="btn-theme" title="Cambia tema" aria-label="Cambia tema chiaro o scuro">🌙</button>
+      <button class="icon-btn" id="btn-help" title="Come si gioca" aria-label="Come si gioca">?</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- =============================== SCACCHIERA =============================== -->
+    <section class="board-column">
+      <div class="player" id="player-top">
+        <div class="avatar" id="top-avatar">🤖</div>
+        <div class="who-block">
+          <div class="who" id="top-name">Computer</div>
+          <div class="meta" id="top-meta">Livello 4 · ~1250 Elo</div>
+        </div>
+        <div class="captured" id="top-captured"></div>
+        <div class="clock" id="top-clock">--:--</div>
+      </div>
+
+      <div class="board-area">
+        <div class="evalbar" id="evalbar" title="Valutazione della posizione">
+          <div class="evalbar-fill" id="evalbar-fill"></div>
+        </div>
+
+        <div class="board-wrap" id="board-wrap">
+          <div class="board" id="board"></div>
+          <svg class="overlay" id="overlay" viewBox="0 0 8 8" preserveAspectRatio="none"></svg>
+          <div class="thinking" id="thinking"><span class="spin"></span><span id="thinking-text">Sto pensando…</span></div>
+          <div class="promo" id="promo">
+            <div class="promo-box">
+              <p>Scegli il pezzo per la promozione</p>
+              <div class="choices" id="promo-choices"></div>
+            </div>
+          </div>
+          <div class="gameover" id="gameover">
+            <div class="box">
+              <h2 id="gameover-title">Partita finita</h2>
+              <p id="gameover-text"></p>
+              <div class="row center">
+                <button class="btn primary" id="gameover-new">Nuova partita</button>
+                <button class="btn" id="gameover-review">Rivedi la partita</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="player" id="player-bottom">
+        <div class="avatar" id="bottom-avatar">🧑</div>
+        <div class="who-block">
+          <div class="who" id="bottom-name">Tu</div>
+          <div class="meta" id="bottom-meta">Bianco</div>
+        </div>
+        <div class="captured" id="bottom-captured"></div>
+        <div class="clock" id="bottom-clock">--:--</div>
+      </div>
+
+      <!-- barra compatta dell'insegnante: visibile solo su smartphone -->
+      <div class="coach-mobile" id="coach-mobile" role="button" tabindex="0" aria-label="Apri il commento dell'insegnante">
+        <span class="badge" id="coach-mobile-badge">🎓</span>
+        <span class="txt" id="coach-mobile-text">Fai la tua prima mossa: poi ti dirò com'è andata.</span>
+        <span class="go">Insegnante ›</span>
+      </div>
+
+      <div class="controls">
+        <button id="btn-undo" title="Annulla l'ultima mossa"><span class="ico">↩</span>Annulla</button>
+        <button id="btn-hint" title="Fammi vedere la mossa migliore"><span class="ico">💡</span>Suggerimento</button>
+        <button id="btn-analyze" title="Analizza a fondo la posizione"><span class="ico">🔍</span>Analizza</button>
+        <button id="btn-flip" title="Gira la scacchiera"><span class="ico">⇅</span>Ruota</button>
+        <button id="btn-moves" title="Vai all'elenco delle mosse"><span class="ico">📋</span>Mosse</button>
+      </div>
+    </section>
+
+    <!-- =============================== PANNELLO =============================== -->
+    <aside class="side">
+      <div class="tabs">
+        <button data-tab="coach" class="active">Insegnante</button>
+        <button data-tab="moves">Mosse</button>
+        <button data-tab="lessons">Lezioni</button>
+        <button data-tab="settings">Impostazioni</button>
+      </div>
+      <div class="tab-body">
+
+        <!-- ------------------------------ INSEGNANTE ------------------------------ -->
+        <div class="tab-panel active" id="panel-coach">
+          <div class="coach-head">
+            <div class="face">🎓</div>
+            <div>
+              <h2>Maestro Scacco</h2>
+              <p id="coach-sub">Il tuo insegnante personale</p>
+            </div>
+          </div>
+
+          <div class="card" id="coach-feedback">
+            <h3>Commento</h3>
+            <div class="big" id="coach-feedback-text">Benvenuto! Fai la tua prima mossa: ti dirò se è buona e perché.</div>
+          </div>
+
+          <div class="card" id="coach-eval-card">
+            <h3>Valutazione</h3>
+            <div class="eval-line">
+              <span class="eval-chip" id="eval-chip">0.00</span>
+              <span class="muted" id="eval-desc">Posizione equilibrata</span>
+            </div>
+          </div>
+
+          <div class="card" id="coach-suggest-card" style="display:none">
+            <h3>Mossa consigliata</h3>
+            <div class="big" id="coach-suggest"></div>
+          </div>
+
+          <div class="card">
+            <h3>Cosa guardare adesso</h3>
+            <ul class="tips" id="coach-tips"><li>Fai una mossa per ricevere i primi consigli.</li></ul>
+          </div>
+
+          <div class="card">
+            <h3>Livello dell'avversario</h3>
+            <div class="level-list" id="level-list"></div>
+            <p class="muted" id="level-desc"></p>
+          </div>
+        </div>
+
+        <!-- --------------------------------- MOSSE --------------------------------- -->
+        <div class="tab-panel" id="panel-moves">
+          <div class="card">
+            <h3>Notazione della partita</h3>
+            <table class="moves" id="moves-table"><tbody></tbody></table>
+            <p class="muted" id="moves-empty">Ancora nessuna mossa. Le mosse compariranno qui con i commenti dell'insegnante.</p>
+          </div>
+          <div class="card">
+            <h3>Strumenti</h3>
+            <div class="row">
+              <button class="btn" id="btn-copy-fen">Copia FEN</button>
+              <button class="btn" id="btn-copy-pgn">Copia PGN</button>
+            </div>
+            <div class="spacer"></div>
+            <input type="text" class="fen-box" id="fen-input" placeholder="Incolla una FEN e premi Invio per caricarla">
+          </div>
+        </div>
+
+        <!-- -------------------------------- LEZIONI -------------------------------- -->
+        <div class="tab-panel" id="panel-lessons">
+          <div class="card lesson-banner" id="lesson-banner" style="display:none">
+            <h3 id="lesson-title">Lezione</h3>
+            <div class="big" id="lesson-goal"></div>
+            <div class="spacer"></div>
+            <div class="row">
+              <button class="btn primary" id="btn-lesson-hint">Indizio</button>
+              <button class="btn" id="btn-lesson-reset">↺ Ricomincia</button>
+              <button class="btn" id="btn-lesson-close">✕ Chiudi lezione</button>
+            </div>
+            <div class="spacer"></div>
+            <div class="muted" id="lesson-status"></div>
+          </div>
+          <div id="lesson-list"></div>
+          <div class="card">
+            <h3>Progressi</h3>
+            <div class="progress"><i id="lesson-progress"></i></div>
+            <div class="spacer"></div>
+            <div class="muted" id="lesson-progress-text">0 lezioni completate</div>
+          </div>
+        </div>
+
+        <!-- ----------------------------- IMPOSTAZIONI ----------------------------- -->
+        <div class="tab-panel" id="panel-settings">
+          <div class="card">
+            <h3>Partita</h3>
+            <div class="field">
+              <label for="set-color">Gioco con i pezzi</label>
+              <select id="set-color">
+                <option value="w">Bianchi (muovo per primo)</option>
+                <option value="b">Neri</option>
+                <option value="r">Casuale</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="set-time">Tempo di riflessione <span class="hint">orologio per ogni giocatore</span></label>
+              <select id="set-time">
+                <option value="0">Nessun limite</option>
+                <option value="300">5 minuti</option>
+                <option value="600">10 minuti</option>
+                <option value="900">15 minuti</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Insegnante</h3>
+            <div class="field">
+              <label for="set-coach">Commenti e consigli <span class="hint">spiega ogni mossa e i piani</span></label>
+              <div class="switch"><input type="checkbox" id="set-coach" checked><span class="slider"></span></div>
+            </div>
+            <div class="field">
+              <label for="set-referee">Avvisi sui pezzi in pericolo <span class="hint">segnala i tuoi pezzi attaccati</span></label>
+              <div class="switch"><input type="checkbox" id="set-referee" checked><span class="slider"></span></div>
+            </div>
+            <div class="field">
+              <label for="set-hints">Mostra le case legali <span class="hint">pallini sulle mosse possibili</span></label>
+              <div class="switch"><input type="checkbox" id="set-hints" checked><span class="slider"></span></div>
+            </div>
+            <div class="field">
+              <label for="set-coords">Coordinate sulla scacchiera</label>
+              <div class="switch"><input type="checkbox" id="set-coords" checked><span class="slider"></span></div>
+            </div>
+            <div class="field">
+              <label for="set-sound">Effetti sonori</label>
+              <div class="switch"><input type="checkbox" id="set-sound" checked><span class="slider"></span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Scacchiera</h3>
+            <div class="field">
+              <label for="set-board">Stile</label>
+              <select id="set-board">
+                <option value="verde">Verde classico</option>
+                <option value="blu">Blu notte</option>
+                <option value="marmo">Marmo</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="set-tempo-livello">Analisi dell'insegnante <span class="hint">più profonda = più lenta</span></label>
+              <select id="set-tempo-livello">
+                <option value="1">Veloce</option>
+                <option value="2" selected>Normale</option>
+                <option value="3">Approfondita</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <span>Guenda&rsquo;s Gambit</span> · scacchi con insegnante · motore e lezioni funzionano anche offline
+  </footer>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="btn modal-close" id="modal-close">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/engine.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/coach.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

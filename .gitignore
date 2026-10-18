@@ -1,0 +1,12 @@
+# file di sistema / editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
+
+# dipendenze (non ce ne sono, ma per sicurezza)
+node_modules/
+
+# backup e file temporanei
+*.bak
+*.tmp
